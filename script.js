@@ -176,4 +176,18 @@ const getRandomStudents = (array) => {
     return randomStudents;
 };
 
-getRandomStudents(students);
+const renderQuestions = (array) => {
+    questionsWrapperEl.innerHTML = array.map((student) => `
+        <div id="question" class="col-sm-12 col-md-6 col-lg-3 p-2">
+            <div class="border rounded">
+                <div class="image-wrapper p-4">
+                    <img src="${student.image}" class="img-fluid rounded-circle" alt="${student.name}">
+                </div>
+            </div>
+        </div>
+    `).join('');
+};
+
+const studentsSelection = getRandomStudents(students);
+
+renderQuestions(studentsSelection);
