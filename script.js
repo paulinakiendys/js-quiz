@@ -159,15 +159,38 @@ const students = [
 
 let numberOfQuestions = 8;
 let studentsSelection = [];
-let options = [];
-let correctName = '';
+let score = 0;
 
 const questionsWrapperEl = document.querySelector('.questions-wrapper');
+const quizFormEl = document.querySelector('#quiz-form');
+const numberOfQuestionsEl = document.querySelector('#numberOfQuestions');
+const scoreEl = document.querySelector('#score');
+const resultsWrapperEl = document.querySelector('.results-wrapper');
+
+quizFormEl.addEventListener('submit', event => {
+    event.preventDefault();
+    correctAnswers = studentsSelection.map(student => student.name);
+    let nodes = document.querySelectorAll('input[type=radio]:checked');
+    let userAnswers = [...nodes].map(node => node.value);
+    userAnswers.forEach((answer, index) => {
+        if(answer === correctAnswers[index]) {
+            score++;
+            quizFormEl.querySelector(`input[name=questionIndex${index}]:checked`).classList.add('is-valid');
+        } else {
+            quizFormEl.querySelector(`input[name=questionIndex${index}]:checked`).classList.add('is-invalid');
+        }
+    });
+
+    scrollTo(0,0);
+    scoreEl.textContent = score;
+    numberOfQuestionsEl.textContent = numberOfQuestions;
+    resultsWrapperEl.classList.remove('d-none');
+});
 
 const shuffleArray = ((array) => {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -189,7 +212,7 @@ const renderQuestions = (array) => {
                 <div class="options-wrapper bg-secondary border rounded p-2 m-3 ">
                 ${(student.options).map(option => `
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="questionIndex${index}" id="${option}" value="${option}" autocomplete="off">
+                        <input class="form-check-input" type="radio" name="questionIndex${index}" id="${option}" value="${option}" autocomplete="off" required>
                         <label class="form-check-label" for="${option}}">${option}</label>
                     </div>
                     `).join('')} 
@@ -201,12 +224,12 @@ const renderQuestions = (array) => {
 
 const addRandomizedOptions = (array) =>
     array.forEach(element => {
-        correctName = element.name;
+        const correctName = element.name;
         const filtered = students.filter(student => {
             return student.name !== correctName;
         });
         shuffleArray(filtered);
-        options = filtered
+        const options = filtered
             .slice(0, 3)
             .map(student => student.name);
         options.push(correctName);
