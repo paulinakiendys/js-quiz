@@ -160,15 +160,20 @@ const students = [
 let numberOfQuestions = 8;
 let studentsSelection = [];
 let score = 0;
+let highscore = null;
 
 const questionsWrapperEl = document.querySelector('.questions-wrapper');
 const quizFormEl = document.querySelector('#quiz-form');
+const submitBtn = document.querySelector('#submit-button');
 const numberOfQuestionsEl = document.querySelector('#numberOfQuestions');
 const scoreEl = document.querySelector('#score');
 const resultsWrapperEl = document.querySelector('.results-wrapper');
+const highScoreEl = document.querySelector('#high-score');
+const newGameBtn = document.querySelector('#new-game-button');
 
 quizFormEl.addEventListener('submit', event => {
     event.preventDefault();
+    submitBtn.disabled = true;
     correctAnswers = studentsSelection.map(student => student.name);
     let nodes = document.querySelectorAll('input[type=radio]:checked');
     let userAnswers = [...nodes].map(node => node.value);
@@ -176,6 +181,14 @@ quizFormEl.addEventListener('submit', event => {
         if(answer === correctAnswers[index]) {
             score++;
             quizFormEl.querySelector(`input[name=questionIndex${index}]:checked`).classList.add('is-valid');
+            if (highscore) {
+                if (score > highscore) {
+                    highscore = score;
+                } else {
+                }
+            } else {
+                highscore = score;
+            }
         } else {
             quizFormEl.querySelector(`input[name=questionIndex${index}]:checked`).classList.add('is-invalid');
         }
@@ -184,7 +197,15 @@ quizFormEl.addEventListener('submit', event => {
     scrollTo(0,0);
     scoreEl.textContent = score;
     numberOfQuestionsEl.textContent = numberOfQuestions;
+    highScoreEl.textContent = highscore;
     resultsWrapperEl.classList.remove('d-none');
+});
+
+newGameBtn.addEventListener('click', event => {
+    resultsWrapperEl.classList.add('d-none');
+    submitBtn.disabled = false;
+    score = 0;
+    startGame();
 });
 
 const shuffleArray = ((array) => {
@@ -213,7 +234,7 @@ const renderQuestions = (array) => {
                 ${(student.options).map(option => `
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="questionIndex${index}" id="${option}" value="${option}" autocomplete="off" required>
-                        <label class="form-check-label" for="${option}}">${option}</label>
+                        <label class="form-check-label" for="${option}">${option}</label>
                     </div>
                     `).join('')} 
                 </div>
@@ -237,8 +258,10 @@ const addRandomizedOptions = (array) =>
         element.options = options;
     });
 
-studentsSelection = getRandomStudents(students);
+const startGame = () => {
+    studentsSelection = getRandomStudents(students);
+    addRandomizedOptions(studentsSelection);
+    renderQuestions(studentsSelection);
+}
 
-addRandomizedOptions(studentsSelection);
-
-renderQuestions(studentsSelection);
+startGame();
