@@ -1,3 +1,4 @@
+// Define data
 const students = [
     {
         "name" : "Adi Dzocaj",
@@ -157,11 +158,13 @@ const students = [
     },
 ];
 
+// Initialize 
 let numberOfQuestions = 8;
 let studentsSelection = [];
 let score = 0;
 let highscore = null;
 
+// Declare element references
 const questionsWrapperEl = document.querySelector('.questions-wrapper');
 const quizFormEl = document.querySelector('#quiz-form');
 const submitBtn = document.querySelector('#submit-button');
@@ -171,6 +174,7 @@ const resultsWrapperEl = document.querySelector('.results-wrapper');
 const highScoreEl = document.querySelector('#high-score');
 const newGameBtn = document.querySelector('#new-game-button');
 
+// Declare event listeners
 quizFormEl.addEventListener('submit', event => {
     event.preventDefault();
     submitBtn.disabled = true;
@@ -208,19 +212,36 @@ newGameBtn.addEventListener('click', event => {
     startGame();
 });
 
-const shuffleArray = ((array) => {
+// Implement functions
+const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         let temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
-});
+};
 
 const getRandomStudents = (array) => {
     shuffleArray(array);
     const randomStudents = array.slice(0, numberOfQuestions);
     return randomStudents;
+};
+
+const addRandomizedOptions = (array) => {
+    array.forEach(element => {
+        const correctName = element.name;
+        const filtered = students.filter(student => {
+            return student.name !== correctName;
+        });
+        shuffleArray(filtered);
+        const options = filtered
+            .slice(0, 3)
+            .map(student => student.name);
+        options.push(correctName);
+        shuffleArray(options);
+        element.options = options;
+    });
 };
 
 const renderQuestions = (array) => {
@@ -243,25 +264,12 @@ const renderQuestions = (array) => {
     `).join('');
 };
 
-const addRandomizedOptions = (array) =>
-    array.forEach(element => {
-        const correctName = element.name;
-        const filtered = students.filter(student => {
-            return student.name !== correctName;
-        });
-        shuffleArray(filtered);
-        const options = filtered
-            .slice(0, 3)
-            .map(student => student.name);
-        options.push(correctName);
-        shuffleArray(options);
-        element.options = options;
-    });
-
+// Program loop is defined here
 const startGame = () => {
     studentsSelection = getRandomStudents(students);
     addRandomizedOptions(studentsSelection);
     renderQuestions(studentsSelection);
-}
+};
 
+// Run program
 startGame();
