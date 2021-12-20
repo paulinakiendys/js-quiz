@@ -254,8 +254,8 @@ const renderQuestions = (array) => {
                 <div class="options-wrapper bg-secondary border rounded p-2 m-3 ">
                 ${(student.options).map(option => `
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="questionIndex${index}" id="${option}" value="${option}" autocomplete="off" required>
-                        <label class="form-check-label" for="${option}">${option}</label>
+                        <input class="form-check-input" type="radio" name="questionIndex${index}" id="${option}_${index}" value="${option}" autocomplete="off" required>
+                        <label class="form-check-label" for="${option}_${index}">${option}</label>
                     </div>
                     `).join('')} 
                 </div>
